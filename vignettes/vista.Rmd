@@ -29,9 +29,9 @@ sdmTMB is a package for fitting generalized linear mixed models (GLMMs) with spa
 if (require(remotes)) {
     install.packages("remotes",repos = "http://cran.us.r-project.org")
 }
-if(require(sdmTMB)) {
+#if(require(sdmTMB)) {
   remotes::install_github("pbs-assess/sdmTMB")
-}
+#}
 library(sdmTMB)
 ```
 

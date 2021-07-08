@@ -1,0 +1,34 @@
+Package: vista
+Type: Package
+Title: Visual Inspection of Spatiotemporal Analyses
+Version: 0.0.1
+Encoding: UTF-8
+Date: 2021-07-05
+Authors@R: c(
+    person(c("Eric", "J."), "Ward", email = "eric.ward@noaa.gov",
+      role = c("aut", "cre")),
+      person(c("Sean", "C."), "Anderson", email = "Sean.Anderson@dfo-mpo.gc.ca",
+      role = c("aut")),
+      person(c("Lewis", "A.K."), "Barnett", email = "lewis.barnett@noaa.gov",
+      role = c("aut")))
+Maintainer: Eric Ward <eric.ward@noaa.gov>
+Description: This package does visualization of predictions and residual from spatiotemporal models.
+License: GPL-3
+Depends:
+    R (>= 4.0.0)
+Imports:
+    ggplot2,
+    qqplotr,
+    viridis,
+    mgcv
+Suggests:
+    testthat,
+    knitr,
+    rmarkdown,
+    devtools,
+    MASS
+URL: https://github.com/ericward-noaa/vista
+BugReports: https://github.com/ericward-noaa/vista/issues
+RoxygenNote: 7.1.1
+VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)

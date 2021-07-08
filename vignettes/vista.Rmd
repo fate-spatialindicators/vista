@@ -1,9 +1,10 @@
 ---
 title: "Overview of the vista package"
-author: "Eric J. Ward, Sean C. Anderson, "
+author: "Eric J. Ward, Sean C. Anderson, Lewis A.K. Barnett"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
+  %\VignetteDepends{sdmTMB,remotes}
   %\VignetteIndexEntry{Overview of the vista package}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
@@ -25,7 +26,12 @@ library(vista)
 sdmTMB is a package for fitting generalized linear mixed models (GLMMs) with spatial and spatiotemporal Gaussian random fields. The package can be installed here,
 
 ```{r warning=FALSE, message=FALSE, results="hide"}
-remotes::install_github("pbs-assess/sdmTMB")
+if (require(remotes)) {
+    install.packages("remotes",repos = "http://cran.us.r-project.org")
+}
+if(require(sdmTMB)) {
+  remotes::install_github("pbs-assess/sdmTMB")
+}
 library(sdmTMB)
 ```
 
@@ -55,25 +61,23 @@ d$resid = residuals(m)
 Finally, we can use the `vista` package to generate diagnostic plots. Each plot can be run individually. Some example functions are below:
 
 ```{r eval=FALSE}
-# Look at all predictions over space
-pred_space()
-# Look at all predictions over space, faceted by time
+# Look at all predictions over space, faceted by time (or not)
 pred_space()
 # Look at all predictions time
 pred_time()
-# Look at residuals over space, faceted by time or not
+# Look at residuals over space, faceted by time (or not)
 resid_space()
 # Look at all residuals over time
 resid_time()
 # Look at variation in residuals through time
 sd_resid_time()
-# Look at variation in residuals across space, faceted by time or not
+# Look at variation in residuals across space, faceted by time (or not)
 sd_resid_space()
-# Look at qq plots, faceted by time or not 
+# Look at qq plots, faceted by time (or not) 
 qq()
-# Look at qq plots over space, faceted by time or not
+# Look at qq plots over space, faceted by time (or not)
 qq_space()
-# Look at predictions vs residuals, faceted by time or not
+# Look at predictions vs residuals, faceted by time (or not)
 pred_resid()
 # Look at time series of Moran statistics (e.g. residuals, predicted values)
 moran_ts()

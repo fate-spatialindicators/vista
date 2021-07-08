@@ -25,8 +25,8 @@ Suggests:
     testthat,
     knitr,
     rmarkdown,
-    devtools,
-    MASS
+    remotes,
+    sdmTMB
 URL: https://github.com/ericward-noaa/vista
 BugReports: https://github.com/ericward-noaa/vista/issues
 RoxygenNote: 7.1.1

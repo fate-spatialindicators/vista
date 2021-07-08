@@ -254,7 +254,7 @@ resid_time <- function(df, time = "time", resid = "resid") {
 #' sd_resid_time(d, time="year")
 #' }
 sd_resid_time <- function(df, time = "time", resid = "resid") {
-  
+  lo <- hi <- obs <- stddev <- NULL
   # coerce df to dataframe
   df <- as.data.frame(df)
   
@@ -572,7 +572,7 @@ moran = function (x, coords, scaled = FALSE, alternative = "two.sided")
 #' }
 moran_ts <- function(df, time = "time", X = "X", Y = "Y", response="pred",
                      scaled = FALSE, alpha=0.05) {
-  
+  lo <- hi <- obs <- NULL
   # coerce df to dataframe
   df <- as.data.frame(df)
   

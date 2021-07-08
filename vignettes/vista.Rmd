@@ -32,6 +32,7 @@ if (require(remotes)) {
 #if(require(sdmTMB)) {
   remotes::install_github("pbs-assess/sdmTMB")
 #}
+install.packages("INLA",repos=c(getOption("repos"),INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE)
 library(sdmTMB)
 ```
 

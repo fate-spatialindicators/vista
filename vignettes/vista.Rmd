@@ -3,7 +3,6 @@ title: "Overview of the vista package"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteDepends{sdmTMB,remotes,foreach}
   %\VignetteIndexEntry{Overview of the vista package}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
@@ -20,33 +19,27 @@ opts_chunk$set(message = FALSE, fig.width = 5.5)
 library(vista)
 ```
 
-### Example with sdmTMB
+## Data
+
+Each of the functions in the `vista` package takes a generic data frame as an argument. As some examples, we can fit models to the `pcod` example dataset from Pacific cod in the `sdmTMB` package, collected by Fisheries and Oceans Canada.
+
+### 1. sdmTMB
 
 sdmTMB is a package for fitting generalized linear mixed models (GLMMs) with spatial and spatiotemporal Gaussian random fields. The package can be installed here,
 
-```{r warning=FALSE, message=FALSE, results="hide"}
-if (require(remotes)) {
-    install.packages("remotes",repos = "http://cran.us.r-project.org")
-}
-if (require(foreach)) {
-    install.packages("foreach",repos = "http://cran.us.r-project.org")
-}
+```{r eval=FALSE}
 remotes::install_github("pbs-assess/sdmTMB")
-# try to also install INLA, a dependency for sdmTMB
-install.packages("INLA",repos="https://inla.r-inla-download.org/R/stable", dep=FALSE)
 library(sdmTMB)
 ```
 
-Now, we can load the example dataset from Pacific cod, collected by Fisheries and Oceans Canada.
-
-```{r warning=FALSE, message=FALSE, results="hide"}
-d <- pcod
+```{r}
+data(pcod)
 ```
 
 We fit a fairly simple spatiotemporal model, using an example from the package. Don't worry about all the arguments -- the density of Pacific cod is modeled as a function of fixed effects (years) and spatiotemporal random fields (essentially different spatial maps in each year). The response is modeled with a Tweedie distribution.
 
-```{r warning=FALSE, message=FALSE, results="hide"}
-m <- sdmTMB(data = d,
+```{r eval=FALSE}
+m <- sdmTMB(data = pcod,
 formula = density ~ 0 + as.factor(year),
 time = "year", spde = make_mesh(d, c("X", "Y"), n_knots = 80, type = "kmeans"),
 family = tweedie(link = "log"), anisotropy = TRUE,
@@ -55,12 +48,42 @@ include_spatial = FALSE)
 
 Next, we can calculate the residual and predicted values from the fitted model
 
-```{r warning=FALSE, message=FALSE, results="hide"}
-d$pred = predict(m)$est
-d$resid = residuals(m)
+```{r warning=FALSE, message=FALSE, results="hide", eval=FALSE}
+pcod$pred = predict(m)$est
+pcod$resid = residuals(m)
 ```
 
-Finally, we can use the `vista` package to generate diagnostic plots. Each plot can be run individually. Some example functions are below:
+### 2. generalized additive models (GAMs) in mgcv
+
+```{r}
+library(mgcv)
+m <- gam(density ~ 0 + as.factor(year) + s(X,Y,by=as.factor(year)), 
+         data=pcod, family=tw())
+```
+
+Again, calculate the residual and predicted values
+
+```{r}
+pcod$pred = predict(m)
+pcod$resid = residuals(m)
+```
+
+### 3. random forest models
+
+```{r eval = FALSE}
+library(randomForest)
+m <- randomForest(density ~ year + X+Y + X:Y, data=pcod)
+```
+
+Objects of class `randomForest` can be used with the predict function, but because these are non-parametric methods, some of the plots in the `vista` package (specifically those focused on residuals) won't work.
+
+```{r eval=FALSE}
+pcod$pred = predict(m)
+```
+
+## Types of plots
+
+We can use the `vista` package to generate diagnostic plots. Each plot can be run individually. Some example functions are below:
 
 ```{r eval=FALSE}
 # Look at all predictions over space, faceted by time (or not)
@@ -85,10 +108,11 @@ pred_resid()
 moran_ts()
 ```
 
-Alternatively, we can call the wrapper function to run all plots. This is a lot more convenient, and returns a list of ggplot() objects. 
+## Examples 
+As an alternative to generating plots individually with specific functions, we can call the wrapper function to run all plots. This is a lot more convenient, and returns a list of ggplot() objects. 
 
 ```{r warning=FALSE, message=FALSE, results="hide"}
-plots <- diagnostic_plots(d, time="year")
+plots <- diagnostic_plots(pcod, time="year")
 ```
 
 We can inspect the plots individually, e.g. 
@@ -101,56 +125,27 @@ Or look at them individually. For example we can look at the residuals spatially
 plots$resid_space_bytime
 ```
 
-Or the time series of Moran statistics on the residuals from the model,
+This may not be informative (because residuals are often on different scales). Instead we can look at the randomized quantile residuals, 
+
 ```{r}
-plots$moran_resid
+plots$qq_space
 ```
 
 Some plots are specific to particular models. For example, looking at the mean residuals over space, all values are 0 because each row of the dataframe has a unique (X,Y) coordinate -- as opposed to repeat sampling at fixed stations.
 
-The standard deviation of residuals over time seems to suggest a non-stationary trend in the variability,
+The standard deviation of residuals over time seems to maybe suggest higher variability earlier in the time series, but not a trend in the variation over time
 
 ```{r}
 plots$sd_resid_time
 ```
 
-
-### Example with a Generalized Additive Model (GAM)
-
-Examples in the vista package are shown using a simulated dataset and `mgcv`. Virtually any other modeling framework can be used, as long as some predicted value
-can be generated (generating a residual is optional). As an example of repeated sampling at the same stations, we'll generate a new dataset,
-
-```{r}
-set.seed(2021)
-d <- expand.grid(X=runif(30), Y = runif(30), 
-year = as.factor(1:5))
-d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
-```
-
-We'll fit a simple model with a single bivariate smooth (spatial component)
-```{r message=FALSE, warning=FALSE, results="hide"}
-m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
-```
-
-Generating predictions and residuals from fitted objects is straightforward,
-```{r message=FALSE, warning=FALSE, results="hide"}
-d$pred = predict(m)
-d$resid = residuals(m)
-```
-
-And as before, we can run the entire set of diagnostic plots
-```{r}
-# the default names match, with the exception of year -- so change it
-plots <- diagnostic_plots(d, time="year")
-```
-
-To highlight some things beyond the sdmTMB example, we expect there to be significant autocorrelation in the predictions (using the Moran statistic), and that indeed appears to be the case
+Additional statistics (such as the Moran statistic) can be used to diagnose lingering spatial autocorrelation. These plots can be made on the predictions (where we expect there to be spatial autocorrelation)
 
 ```{r}
 plots$moran_pred
 ```
 
-but it's generally not present in the residuals, suggesting that our spatial model is explaining away most of it.
+or on the residuals, where we hope there is little residual autocorrelation (because our spatial model is explaining away most of it).
 
 ```{r}
 plots$moran_resid

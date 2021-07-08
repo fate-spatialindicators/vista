@@ -10,7 +10,10 @@ Authors@R: c(
       person(c("Sean", "C."), "Anderson", email = "Sean.Anderson@dfo-mpo.gc.ca",
       role = c("aut")),
       person(c("Lewis", "A.K."), "Barnett", email = "lewis.barnett@noaa.gov",
-      role = c("aut")))
+      role = c("aut")),
+      person(c("Kelli", "F."), "Johnson", email = "kelli.johnson@noaa.gov",
+      role = c("aut"))
+      )
 Maintainer: Eric Ward <eric.ward@noaa.gov>
 Description: This package does visualization of predictions and residual from spatiotemporal models.
 License: GPL-3

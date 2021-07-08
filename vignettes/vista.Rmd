@@ -1,6 +1,5 @@
 ---
 title: "Overview of the vista package"
-author: "Eric J. Ward, Sean C. Anderson, Lewis A.K. Barnett"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -32,10 +31,9 @@ if (require(remotes)) {
 if (require(foreach)) {
     install.packages("foreach",repos = "http://cran.us.r-project.org")
 }
-#if(require(sdmTMB)) {
-  remotes::install_github("pbs-assess/sdmTMB")
-#}
-install.packages("INLA",repos=c(getOption("repos"),INLA="https://inla.r-inla-download.org/R/stable"), dep=TRUE)
+remotes::install_github("pbs-assess/sdmTMB")
+# try to also install INLA, a dependency for sdmTMB
+install.packages("INLA",repos="https://inla.r-inla-download.org/R/stable", dep=FALSE)
 library(sdmTMB)
 ```
 

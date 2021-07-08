@@ -26,6 +26,7 @@ Suggests:
     knitr,
     rmarkdown,
     remotes,
+    foreach,
     sdmTMB
 URL: https://github.com/ericward-noaa/vista
 BugReports: https://github.com/ericward-noaa/vista/issues

@@ -4,7 +4,7 @@ author: "Eric J. Ward, Sean C. Anderson, Lewis A.K. Barnett"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteDepends{sdmTMB,remotes}
+  %\VignetteDepends{sdmTMB,remotes,foreach}
   %\VignetteIndexEntry{Overview of the vista package}
   %\VignetteEngine{knitr::rmarkdown}
   \usepackage[utf8]{inputenc}
@@ -28,6 +28,9 @@ sdmTMB is a package for fitting generalized linear mixed models (GLMMs) with spa
 ```{r warning=FALSE, message=FALSE, results="hide"}
 if (require(remotes)) {
     install.packages("remotes",repos = "http://cran.us.r-project.org")
+}
+if (require(foreach)) {
+    install.packages("foreach",repos = "http://cran.us.r-project.org")
 }
 #if(require(sdmTMB)) {
   remotes::install_github("pbs-assess/sdmTMB")

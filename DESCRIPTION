@@ -28,7 +28,7 @@ Suggests:
     testthat,
     knitr,
     rmarkdown
-URL: https://github.com/ericward-noaa/vista
+URL: https://ericward-noaa.github.io/vista/
 BugReports: https://github.com/ericward-noaa/vista/issues
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr

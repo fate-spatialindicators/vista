@@ -15,9 +15,11 @@
 #' @examples
 #' \donttest{
 #' set.seed(2021)
-#' d <- data.frame(X=runif(1000), Y = runif(1000), 
-#' year = sample(1:10,size=1000,replace=TRUE))
-#' d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
+#' #d <- data.frame(X=runif(1000), Y = runif(1000),
+#' #year = sample(1:10,size=1000,replace=TRUE))
+#' #d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
+#' data(pcod)
+#' d <- pcod
 #' m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
 #' d$pred = predict(m)
 #  d$resid = residuals(m)
@@ -27,7 +29,7 @@
 diagnostic_plots <- function(df, X = "X", Y = "Y", time = "time",
                              pred = "pred", resid = "resid",
                              demean_time = TRUE) {
-  
+
   plots = list(
     pred_space = pred_space(df, X = X, Y = Y, time = time,
                             pred = pred, demean_time = TRUE, by_time = FALSE),
@@ -49,7 +51,7 @@ diagnostic_plots <- function(df, X = "X", Y = "Y", time = "time",
                             resid = resid, by_time = TRUE),
     moran_pred = moran_ts(df, time=time, response=pred),
     moran_resid = moran_ts(df, time=time, response=resid))
-  
+
   return(plots)
 }
 
@@ -77,20 +79,20 @@ diagnostic_plots <- function(df, X = "X", Y = "Y", time = "time",
 #' @examples
 #' \donttest{
 #' set.seed(2021)
-#' d <- data.frame(X=runif(1000), Y = runif(1000), 
+#' d <- data.frame(X=runif(1000), Y = runif(1000),
 #' year = sample(1:10,size=1000,replace=TRUE))
 #' d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
-#' 
+#'
 #' m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
 #' d$pred = predict(m)
 #' pred_space(df = d, time="year")
 #' }
 pred_space <- function(df, X = "X", Y = "Y", time = "time",
                        pred = "pred", demean_time = TRUE, by_time = TRUE) {
-  
+
   # coerce df to dataframe
   df <- as.data.frame(df)
-  
+
   if (demean_time == TRUE) {
     # remove year effects
     for (t in unique(df[[time]])) {
@@ -98,7 +100,7 @@ pred_space <- function(df, X = "X", Y = "Y", time = "time",
       df[indx, pred] <- df[indx, pred] - mean(df[indx, pred], na.rm = T)
     }
   }
-  
+
   g <- ggplot(df, aes_string(X, Y, col = pred)) +
     geom_point(alpha = 0.5) +
     theme_bw() +
@@ -126,17 +128,17 @@ pred_space <- function(df, X = "X", Y = "Y", time = "time",
 #' @examples
 #' \donttest{
 #' set.seed(2021)
-#' d <- data.frame(X=runif(1000), Y = runif(1000), 
+#' d <- data.frame(X=runif(1000), Y = runif(1000),
 #' year = sample(1:10,size=1000,replace=TRUE))
 #' d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
-#' 
+#'
 #' m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
 #' d$pred = predict(m)
 #' # the default names match, with the exception of year -- so change it
 #' pred_time(d, time="year")
 #' }
 pred_time <- function(df, time = "time", pred = "pred") {
-  
+
   # coerce df to dataframe
   df <- as.data.frame(df)
   df[[time]] = as.factor(df[[time]])
@@ -167,7 +169,7 @@ pred_time <- function(df, time = "time", pred = "pred") {
 #' @examples
 #' \donttest{
 #' set.seed(2021)
-#' d <- data.frame(X=runif(1000), Y = runif(1000), 
+#' d <- data.frame(X=runif(1000), Y = runif(1000),
 #' year = sample(1:10,size=1000,replace=TRUE))
 #' d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
 #' m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
@@ -177,10 +179,10 @@ pred_time <- function(df, time = "time", pred = "pred") {
 #' }
 resid_space <- function(df, X = "X", Y = "Y", time = "time", resid = "resid",
                         by_time = TRUE) {
-  
+
   # coerce df to dataframe
   df <- as.data.frame(df)
-  
+
   g <- ggplot(df, aes_string(X, Y, col = resid)) +
     geom_point(alpha = 0.5) +
     theme_bw() +
@@ -208,7 +210,7 @@ resid_space <- function(df, X = "X", Y = "Y", time = "time", resid = "resid",
 #' @examples
 #' \donttest{
 #' set.seed(2021)
-#' d <- data.frame(X=runif(1000), Y = runif(1000), 
+#' d <- data.frame(X=runif(1000), Y = runif(1000),
 #' year = sample(1:10,size=1000,replace=TRUE))
 #' d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
 #' m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
@@ -217,7 +219,7 @@ resid_space <- function(df, X = "X", Y = "Y", time = "time", resid = "resid",
 #' resid_time(d, time="year")
 #' }
 resid_time <- function(df, time = "time", resid = "resid") {
-  
+
   # coerce df to dataframe
   df <- as.data.frame(df)
   df[[time]] = as.factor(df[[time]])
@@ -245,7 +247,7 @@ resid_time <- function(df, time = "time", resid = "resid") {
 #' @examples
 #' \donttest{
 #' set.seed(2021)
-#' d <- data.frame(X=runif(1000), Y = runif(1000), 
+#' d <- data.frame(X=runif(1000), Y = runif(1000),
 #' year = sample(1:10,size=1000,replace=TRUE))
 #' d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
 #' m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
@@ -257,7 +259,7 @@ sd_resid_time <- function(df, time = "time", resid = "resid") {
   lo <- hi <- obs <- stddev <- NULL
   # coerce df to dataframe
   df <- as.data.frame(df)
-  
+
   df_new <- data.frame(
     "time" = unique(df[[time]]),
     "stddev" = 0,
@@ -273,7 +275,7 @@ sd_resid_time <- function(df, time = "time", resid = "resid") {
     df_new$lo[i] <- quantile(sds, 0.025)
     df_new$hi[i] <- quantile(sds, 0.975)
   }
-  
+
   g <- ggplot(df_new, aes(time, stddev)) +
     geom_ribbon(aes(ymin = lo, ymax = hi), alpha = 0.3) +
     geom_line() +
@@ -301,7 +303,7 @@ sd_resid_time <- function(df, time = "time", resid = "resid") {
 #' @examples
 #' \donttest{
 #' set.seed(2021)
-#' d <- data.frame(X=runif(1000), Y = runif(1000), 
+#' d <- data.frame(X=runif(1000), Y = runif(1000),
 #' year = sample(1:10,size=1000,replace=TRUE))
 #' d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
 #' m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
@@ -310,10 +312,10 @@ sd_resid_time <- function(df, time = "time", resid = "resid") {
 #' sd_resid_space(d, time="year")
 #' }
 sd_resid_space <- function(df, X = "X", Y = "Y", time = "time", resid = "resid") {
-  
+
   # coerce df to dataframe
   df <- as.data.frame(df)
-  
+
   # df here is a dataframe, where sites may or may not be replicated
   # across time steps
   df$unique_site <- paste(df[[X]], df[[Y]], df[[time]])
@@ -332,7 +334,7 @@ sd_resid_space <- function(df, X = "X", Y = "Y", time = "time", resid = "resid")
     orig_site <- which(df$unique_site == df_new$site[i])
     df_new$resid[i] <- sd(df[orig_site, resid], na.rm = T)
   }
-  
+
   g <- ggplot(df_new, aes_string(X, Y, col = resid)) +
     geom_point(alpha = 0.5) +
     # scale_color_gradient2() +
@@ -361,7 +363,7 @@ sd_resid_space <- function(df, X = "X", Y = "Y", time = "time", resid = "resid")
 #' @examples
 #' \donttest{
 #' set.seed(2021)
-#' d <- data.frame(X=runif(1000), Y = runif(1000), 
+#' d <- data.frame(X=runif(1000), Y = runif(1000),
 #' year = sample(1:10,size=1000,replace=TRUE))
 #' d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
 #' m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
@@ -370,10 +372,10 @@ sd_resid_space <- function(df, X = "X", Y = "Y", time = "time", resid = "resid")
 #' qq(d, time="year")
 #' }
 qq <- function(df, time = "time", resid = "resid", by_time = TRUE) {
-  
+
   # coerce df to dataframe
   df <- as.data.frame(df)
-  
+
   g <- ggplot(df, aes(sample = resid)) +
     stat_qq_band(alpha = 0.3) +
     stat_qq_line() +
@@ -407,7 +409,7 @@ qq <- function(df, time = "time", resid = "resid", by_time = TRUE) {
 #' @examples
 #' \donttest{
 #' set.seed(2021)
-#' d <- data.frame(X=runif(1000), Y = runif(1000), 
+#' d <- data.frame(X=runif(1000), Y = runif(1000),
 #' year = sample(1:10,size=1000,replace=TRUE))
 #' d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
 #' m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
@@ -416,10 +418,10 @@ qq <- function(df, time = "time", resid = "resid", by_time = TRUE) {
 #' qq_space(d, time="year")
 #' }
 qq_space <- function(df, X = "X", Y = "Y", time = "time", resid = "resid") {
-  
+
   # coerce df to dataframe
   df <- as.data.frame(df)
-  
+
   qq <- stats::qqnorm(df[[resid]], plot.it = FALSE)
   df$qq <- qq$y - qq$x
   g <- ggplot(df, aes_string(X, Y, col = "qq")) +
@@ -449,7 +451,7 @@ qq_space <- function(df, X = "X", Y = "Y", time = "time", resid = "resid") {
 #' @examples
 #' \donttest{
 #' set.seed(2021)
-#' d <- data.frame(X=runif(1000), Y = runif(1000), 
+#' d <- data.frame(X=runif(1000), Y = runif(1000),
 #' year = sample(1:10,size=1000,replace=TRUE))
 #' d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
 #' m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
@@ -458,10 +460,10 @@ qq_space <- function(df, X = "X", Y = "Y", time = "time", resid = "resid") {
 #' pred_resid(d, time="year")
 #' }
 pred_resid <- function(df, time = "time", pred = "pred", resid = "resid", by_time = TRUE) {
-  
+
   # coerce df to dataframe
   df <- as.data.frame(df)
-  
+
   g <- ggplot(df, aes_string(pred, resid)) +
     geom_point(alpha = 0.5) +
     theme_bw() +
@@ -493,21 +495,21 @@ pred_resid <- function(df, time = "time", pred = "pred", resid = "resid", by_tim
 #' @examples
 #' \donttest{
 #' set.seed(2021)
-#' d <- data.frame(X=runif(1000), Y = runif(1000), 
+#' d <- data.frame(X=runif(1000), Y = runif(1000),
 #' year = sample(1:10,size=1000,replace=TRUE))
 #' d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
 #' moran_stat = moran(d$density, coords = d[,c("X","Y")])
 #' }
-moran = function (x, coords, scaled = FALSE, alternative = "two.sided") 
+moran = function (x, coords, scaled = FALSE, alternative = "two.sided")
 {
   # code largely taken from ape::moran.I, but modified to take a list of coordinates to automate
   # could be extended to include other functions, but right now 1/dist is the weight
   weight <- as.matrix(1 / dist(coords,diag=TRUE,upper=TRUE))
   diag(weight) <- 0
   n <- length(x)
-  
+
   ei <- -1/(n - 1)
-  
+
   ROWSUM <- rowSums(weight)
   ROWSUM[ROWSUM == 0] <- 1
   weight <- weight/ROWSUM
@@ -525,16 +527,16 @@ moran = function (x, coords, scaled = FALSE, alternative = "two.sided")
   S2 <- sum((apply(weight, 1, sum) + apply(weight, 2, sum))^2)
   s.sq <- s^2
   k <- (sum(y^4)/n)/(v/n)^2
-  sdi <- sqrt((n * ((n^2 - 3 * n + 3) * S1 - n * S2 + 3 * s.sq) - 
+  sdi <- sqrt((n * ((n^2 - 3 * n + 3) * S1 - n * S2 + 3 * s.sq) -
                  k * (n * (n - 1) * S1 - 2 * n * S2 + 6 * s.sq))/((n - 1) * (n - 2) * (n - 3) * s.sq) - 1/((n - 1)^2))
-  alternative <- match.arg(alternative, c("two.sided", "less", 
+  alternative <- match.arg(alternative, c("two.sided", "less",
                                           "greater"))
   pv <- pnorm(obs, mean = ei, sd = sdi)
-  if (alternative == "two.sided") 
-    pv <- if (obs <= ei) 
+  if (alternative == "two.sided")
+    pv <- if (obs <= ei)
       2 * pv
   else 2 * (1 - pv)
-  if (alternative == "greater") 
+  if (alternative == "greater")
     pv <- 1 - pv
   list(observed = obs, expected = ei, sd = sdi, p.value = pv)
 }
@@ -560,7 +562,7 @@ moran = function (x, coords, scaled = FALSE, alternative = "two.sided")
 #' @examples
 #' \donttest{
 #' set.seed(2021)
-#' d <- data.frame(X=runif(1000), Y = runif(1000), 
+#' d <- data.frame(X=runif(1000), Y = runif(1000),
 #' year = sample(1:10,size=1000,replace=TRUE))
 #' d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
 #' m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
@@ -575,12 +577,12 @@ moran_ts <- function(df, time = "time", X = "X", Y = "Y", response="pred",
   lo <- hi <- obs <- NULL
   # coerce df to dataframe
   df <- as.data.frame(df)
-  
+
   moran_df = data.frame("time"=as.numeric(unique(df[[time]])),
                         "mean" = NA, "lo"=NA, "hi"=NA, "p_val"=NA)
   for(i in 1:nrow(moran_df)) {
     indx = which(df[[time]] == moran_df$time[i])
-    moran_stat =  moran(x = as.numeric(df[indx,response]), coords = cbind(df[indx,X], df[indx,Y]), 
+    moran_stat =  moran(x = as.numeric(df[indx,response]), coords = cbind(df[indx,X], df[indx,Y]),
                         scaled=scaled)
     moran_df$mean[i] = moran_stat$expected
     moran_df$lo[i] = moran_stat$expected - 1.96*moran_stat$sd
@@ -588,17 +590,17 @@ moran_ts <- function(df, time = "time", X = "X", Y = "Y", response="pred",
     moran_df$obs[i] = moran_stat$observed
     moran_df$p_val[i] = moran_stat$p.value
   }
-  
+
   col = rep("black",nrow(moran_df))
   col[which(moran_df$p_val < alpha)] = "red"
-  
+
   g <- ggplot(moran_df, aes(time, mean)) +
-    geom_ribbon(aes(ymin=lo, ymax=hi), alpha=0.4) + 
+    geom_ribbon(aes(ymin=lo, ymax=hi), alpha=0.4) +
     theme_bw() +
-    geom_point(data = moran_df, aes(time, obs), col=col) + 
+    geom_point(data = moran_df, aes(time, obs), col=col) +
     xlab("") +
     xlab("") +
     ylab("Moran-I statistic")
-  
+
   return(g)
 }

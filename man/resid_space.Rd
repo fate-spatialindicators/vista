@@ -10,7 +10,8 @@ resid_space(
   Y = "Y",
   time = "time",
   resid = "resid",
-  by_time = TRUE
+  by_time = TRUE,
+  outlier_sd = 3
 )
 }
 \arguments{
@@ -25,6 +26,9 @@ resid_space(
 \item{resid}{Character string containing the name of residual variable}
 
 \item{by_time}{Whether to facet by time (default = TRUE) or not}
+
+\item{outlier_sd}{Threshold for how residuals are classified as outliers; defaults to 3
+(e.g. a residual value more than 3 SDs is classified as an outlier)}
 }
 \value{
 A ggplot object that can be manipulated further
@@ -35,12 +39,14 @@ resid_space
 \examples{
 \donttest{
 set.seed(2021)
-d <- data.frame(X=runif(1000), Y = runif(1000),
-year = sample(1:10,size=1000,replace=TRUE))
-d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
-m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
-d$resid = resid(m)
+d <- data.frame(
+  X = runif(1000), Y = runif(1000),
+  year = sample(1:10, size = 1000, replace = TRUE)
+)
+d$density <- rnorm(0.01 * d$X - 0.001 * d$X * d$X + d$Y * 0.02 - 0.005 * d$Y * d$Y, 0, 0.1)
+m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X, Y), data = d)
+d$resid <- resid(m)
 # the default names match, with the exception of year -- so change it
-resid_space(d, time="year")
+resid_space(d, time = "year")
 }
 }

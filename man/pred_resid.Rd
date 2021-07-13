@@ -26,12 +26,14 @@ pred_resid
 \examples{
 \donttest{
 set.seed(2021)
-d <- data.frame(X=runif(1000), Y = runif(1000),
-year = sample(1:10,size=1000,replace=TRUE))
-d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
-m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
-d$resid = resid(m)
+d <- data.frame(
+  X = runif(1000), Y = runif(1000),
+  year = sample(1:10, size = 1000, replace = TRUE)
+)
+d$density <- rnorm(0.01 * d$X - 0.001 * d$X * d$X + d$Y * 0.02 - 0.005 * d$Y * d$Y, 0, 0.1)
+m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X, Y), data = d)
+d$resid <- resid(m)
 # the default names match, with the exception of year -- so change it
-pred_resid(d, time="year")
+pred_resid(d, time = "year")
 }
 }

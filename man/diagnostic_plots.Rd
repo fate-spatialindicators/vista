@@ -39,10 +39,15 @@ diagnostic_plots
 \examples{
 \donttest{
 set.seed(2021)
-d <- data.frame(X=runif(1000), Y = runif(1000),
-year = sample(1:10,size=1000,replace=TRUE))
-d$density = rnorm(0.01*d$X -0.001*d$X*d$X + d$Y*0.02 - 0.005*d$Y*d$Y,0,0.1)
-m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X,Y),data=d)
-d$pred = predict(m)
+d <- data.frame(
+  X = runif(1000), Y = runif(1000),
+  year = sample(1:10, size = 1000, replace = TRUE)
+)
+d$density <- rnorm(0.01 * d$X - 0.001 * d$X * d$X + d$Y * 0.02 - 0.005 * d$Y * d$Y, 0, 0.1)
+m <- mgcv::gam(density ~ 0 + as.factor(year) + s(X, Y), data = d)
+d$pred <- predict(m)
+#  d$resid = residuals(m)
+#  # the default names match, with the exception of year -- so change it
+#  plots <- diagnostic_plots(d, time="year")
 }
 }

@@ -72,7 +72,7 @@
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Overview of the vista package</h1>
             
-            <h4 class="date">2021-07-08</h4>
+            <h4 class="date">2021-07-13</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/ericward-noaa/vista/blob/master/vignettes/vista.Rmd"><code>vignettes/vista.Rmd</code></a></small>
       <div class="hidden name"><code>vista.Rmd</code></div>
@@ -171,7 +171,8 @@ include_spatial <span class="op">=</span> <span class="cn">FALSE</span><span cla
 ##  [4] "resid_space"        "resid_space_bytime" "resid_time"        
 ##  [7] "sd_resid_time"      "sd_resid_space"     "qq"                
 ## [10] "qq_time"            "qq_space"           "pred_resid"        
-## [13] "moran_pred"         "moran_resid"</code></pre>
+## [13] "moran_pred"         "moran_resid"        "scale_loc"         
+## [16] "scale_loc_time"</code></pre>
 <p>Or look at them individually. For example we can look at the residuals spatially, and across time slices with</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">plots</span><span class="op">$</span><span class="va">resid_space_bytime</span></code></pre></div>

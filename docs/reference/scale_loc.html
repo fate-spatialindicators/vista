@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>moran — moran • vista</title>
+<title>scale_loc — scale_loc • vista</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="moran — moran" />
-<meta property="og:description" content="moran" />
+<meta property="og:title" content="scale_loc — scale_loc" />
+<meta property="og:description" content="scale_loc" />
 
 
 
@@ -111,42 +111,56 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>moran</h1>
+    <h1>scale_loc</h1>
     <small class="dont-index">Source: <a href='https://github.com/ericward-noaa/vista/blob/master/R/diag_plots.R'><code>R/diag_plots.R</code></a></small>
-    <div class="hidden name"><code>moran.Rd</code></div>
+    <div class="hidden name"><code>scale_loc.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>moran</p>
+    <p>scale_loc</p>
     </div>
 
-    <pre class="usage"><span class='fu'>moran</span><span class='op'>(</span><span class='va'>x</span>, <span class='va'>coords</span>, scaled <span class='op'>=</span> <span class='cn'>FALSE</span>, alternative <span class='op'>=</span> <span class='st'>"two.sided"</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>scale_loc</span><span class='op'>(</span>
+  <span class='va'>df</span>,
+  time <span class='op'>=</span> <span class='st'>"time"</span>,
+  pred <span class='op'>=</span> <span class='st'>"pred"</span>,
+  resid <span class='op'>=</span> <span class='st'>"resid"</span>,
+  by_time <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  add_smooth <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>x</th>
-      <td><p>numeric vector of responses</p></td>
+      <th>df</th>
+      <td><p>Dataframe, containing locations, time, and predictions</p></td>
     </tr>
     <tr>
-      <th>coords</th>
-      <td><p>Matrix of coordinates corresponding to values in X, can also be data
-frame that the distance matrix is generated from</p></td>
+      <th>time</th>
+      <td><p>Character string containing the name of time variable</p></td>
     </tr>
     <tr>
-      <th>scaled</th>
-      <td><p>Boolean, whether to use scaled (standardized) values</p></td>
+      <th>pred</th>
+      <td><p>Character string containing the name of prediction variable</p></td>
     </tr>
     <tr>
-      <th>alternative</th>
+      <th>resid</th>
       <td><p>Character string containing the name of residual variable</p></td>
+    </tr>
+    <tr>
+      <th>by_time</th>
+      <td><p>Whether to facet by time (default = TRUE) or not</p></td>
+    </tr>
+    <tr>
+      <th>add_smooth</th>
+      <td><p>Whether to include a smoothed line via geom_smooth (default = TRUE)</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A list including the observed and expected statistic, standard error, and p-value</p>
+    <p>A ggplot object that can be manipulated further</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
@@ -156,8 +170,13 @@ frame that the distance matrix is generated from</p></td>
   year <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span>, size <span class='op'>=</span> <span class='fl'>1000</span>, replace <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
 <span class='op'>)</span>
 <span class='va'>d</span><span class='op'>$</span><span class='va'>density</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/Normal.html'>rnorm</a></span><span class='op'>(</span><span class='fl'>0.01</span> <span class='op'>*</span> <span class='va'>d</span><span class='op'>$</span><span class='va'>X</span> <span class='op'>-</span> <span class='fl'>0.001</span> <span class='op'>*</span> <span class='va'>d</span><span class='op'>$</span><span class='va'>X</span> <span class='op'>*</span> <span class='va'>d</span><span class='op'>$</span><span class='va'>X</span> <span class='op'>+</span> <span class='va'>d</span><span class='op'>$</span><span class='va'>Y</span> <span class='op'>*</span> <span class='fl'>0.02</span> <span class='op'>-</span> <span class='fl'>0.005</span> <span class='op'>*</span> <span class='va'>d</span><span class='op'>$</span><span class='va'>Y</span> <span class='op'>*</span> <span class='va'>d</span><span class='op'>$</span><span class='va'>Y</span>, <span class='fl'>0</span>, <span class='fl'>0.1</span><span class='op'>)</span>
-<span class='va'>moran_stat</span> <span class='op'>&lt;-</span> <span class='fu'>moran</span><span class='op'>(</span><span class='va'>d</span><span class='op'>$</span><span class='va'>density</span>, coords <span class='op'>=</span> <span class='va'>d</span><span class='op'>[</span>, <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"X"</span>, <span class='st'>"Y"</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span>
-<span class='co'># }</span>
+
+<span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'>mgcv</span><span class='fu'>::</span><span class='fu'><a href='https://rdrr.io/pkg/mgcv/man/gam.html'>gam</a></span><span class='op'>(</span><span class='va'>density</span> <span class='op'>~</span> <span class='fl'>0</span> <span class='op'>+</span> <span class='fu'><a href='https://rdrr.io/r/base/factor.html'>as.factor</a></span><span class='op'>(</span><span class='va'>year</span><span class='op'>)</span> <span class='op'>+</span> <span class='fu'>s</span><span class='op'>(</span><span class='va'>X</span>, <span class='va'>Y</span><span class='op'>)</span>, data <span class='op'>=</span> <span class='va'>d</span><span class='op'>)</span>
+<span class='va'>d</span><span class='op'>$</span><span class='va'>pred</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
+<span class='va'>d</span><span class='op'>$</span><span class='va'>resid</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/residuals.html'>resid</a></span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span>
+<span class='co'># the default names match, with the exception of year -- so change it</span>
+<span class='fu'>scale_loc</span><span class='op'>(</span><span class='va'>d</span>, time <span class='op'>=</span> <span class='st'>"year"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='message'>`geom_smooth()` using method = 'loess' and formula 'y ~ x'</span></div><div class='img'><img src='scale_loc-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'># }</span>
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

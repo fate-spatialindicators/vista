@@ -30,7 +30,7 @@ Suggests:
     rmarkdown
 URL: https://ericward-noaa.github.io/vista/
 BugReports: https://github.com/ericward-noaa/vista/issues
-RoxygenNote: 7.1.1
+RoxygenNote: 7.1.2
 VignetteBuilder: knitr
 LazyData: true
 Roxygen: list(markdown = TRUE)

@@ -39,80 +39,85 @@ data(pcod)
 We fit a fairly simple spatiotemporal model, using an example from the package. Don't worry about all the arguments -- the density of Pacific cod is modeled as a function of fixed effects (years) and spatiotemporal random fields (essentially different spatial maps in each year). The response is modeled with a Tweedie distribution.
 
 ```{r eval=FALSE}
-m <- sdmTMB(data = pcod,
-formula = density ~ 0 + as.factor(year),
-time = "year", spde = make_mesh(d, c("X", "Y"), n_knots = 80, type = "kmeans"),
-family = tweedie(link = "log"), anisotropy = TRUE,
-include_spatial = FALSE)
+mesh <- make_mesh(pcod, c("X", "Y"), cutoff = 15)
+m <- sdmTMB(
+  data = pcod,
+  formula = density ~ 0 + as.factor(year),
+  time = "year",
+  mesh = mesh,
+  family = tweedie(link = "log"),
+  spatial = "off"
+)
 ```
 
 Next, we can calculate the residual and predicted values from the fitted model
 
 ```{r warning=FALSE, message=FALSE, results="hide", eval=FALSE}
-pcod$pred = predict(m)$est
-pcod$resid = residuals(m)
+pcod$pred <- predict(m)$est
+pcod$resid <- residuals(m)
 ```
 
 ### 2. generalized additive models (GAMs) in mgcv
 
 ```{r}
 library(mgcv)
-m <- gam(density ~ 0 + as.factor(year) + s(X,Y,by=as.factor(year)), 
-         data=pcod, family=tw())
+m <- gam(density ~ 0 + as.factor(year) + s(X, Y, by = as.factor(year)),
+  data = pcod, family = tw()
+)
 ```
 
 Again, calculate the residual and predicted values
 
 ```{r}
-pcod$pred = predict(m)
-pcod$resid = residuals(m)
+pcod$pred <- predict(m)
+pcod$resid <- residuals(m)
 ```
 
 ### 3. random forest models
 
 ```{r eval = FALSE}
 library(randomForest)
-m <- randomForest(density ~ year + X+Y + X:Y, data=pcod)
+m <- randomForest(density ~ year + X + Y + X:Y, data = pcod)
 ```
 
 Objects of class `randomForest` can be used with the predict function, but because these are non-parametric methods, some of the plots in the `vista` package (specifically those focused on residuals) won't work.
 
 ```{r eval=FALSE}
-pcod$pred = predict(m)
+pcod$pred <- predict(m)
 ```
 
 ## Types of plots
 
-We can use the `vista` package to generate diagnostic plots. Each plot can be run individually. Some example functions are below:
+We can use the `vista` package to generate diagnostic plots. Each plot can be run individually. Some example functions are below (illustrating how to use them with our pcod example above):
 
 ```{r eval=FALSE}
 # Look at all predictions over space, faceted by time (or not)
-pred_space()
+pred_space(df = pcod, time = "year")
 # Look at all predictions time
-pred_time()
+pred_time(df = pcod, time = "year")
 # Look at residuals over space, faceted by time (or not)
-resid_space()
+resid_space(df = pcod, time = "year")
 # Look at all residuals over time
-resid_time()
+resid_time(df = pcod, time = "year")
 # Look at variation in residuals through time
-sd_resid_time()
+sd_resid_time(df = pcod, time = "year")
 # Look at variation in residuals across space, faceted by time (or not)
-sd_resid_space()
-# Look at qq plots, faceted by time (or not) 
-qq()
+sd_resid_space(df = pcod, time = "year")
+# Look at qq plots, faceted by time (or not)
+qq(df = pcod, time = "year")
 # Look at qq plots over space, faceted by time (or not)
-qq_space()
+qq_space(df = pcod, time = "year")
 # Look at predictions vs residuals, faceted by time (or not)
-pred_resid()
+pred_resid(df = pcod, time = "year")
 # Look at time series of Moran statistics (e.g. residuals, predicted values)
-moran_ts()
+moran_ts(df = pcod, time = "year")
 ```
 
 ## Examples 
 As an alternative to generating plots individually with specific functions, we can call the wrapper function to run all plots. This is a lot more convenient, and returns a list of ggplot() objects. 
 
 ```{r warning=FALSE, message=FALSE, results="hide"}
-plots <- diagnostic_plots(pcod, time="year")
+plots <- diagnostic_plots(pcod, time = "year")
 ```
 
 We can inspect the plots individually, e.g. 

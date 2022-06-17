@@ -1,9 +1,10 @@
-<!-- badges: start -->
+
+  <!-- badges: start -->
   [![R-CMD-check](https://github.com/ericward-noaa/vista/workflows/R-CMD-check/badge.svg)](https://github.com/ericward-noaa/vista/actions)
   <!-- badges: end -->
-
+  
 # vista
-This is a repository for the 'vista' package in R. 'vista' stands for 'Visualizing and Inspecting SpatioTemporal Analyses'. Output from nearly all spatial or spatiotemporal models may be used as data input, and a series of plots are generated from the predicted and residual values. Examples are based on sdmTMB and mgcv -- though lots of other model frameworks may be used.
+This is a repository for the 'vista' package in R. 'vista' stands for 'Visualizing and Inspecting SpatioTemporal Analyses'. Output from nearly all spatial or spatiotemporal models may be used as data input, and a series of plots are generated from the predicted and residual values. Examples are based on `sdmTMB` and `mgcv` -- though lots of other model frameworks may be used.
 
 ## NOAA Disclaimer
 

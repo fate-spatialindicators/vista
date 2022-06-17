@@ -46,7 +46,7 @@ pred_space(df = pcod, time = "year", by_time = FALSE)
 
 ### Residuals  in space
 
-Similarly, the `resid_space` function is designed to plot spatial residuals (again these have mean 0). And faceting can be turned on / off, but by default `by_time = TRUE`.
+Similarly, the `resid_space` function is designed to plot spatial residuals (again these have mean 0). And faceting can be turned on / off, but by default `by_time = TRUE`. Asterisks are used to indicate outliers, or values of residuals that are more than 3 standard deviations in magnitude.
 
 ```{r}
 resid_space(df = pcod, time = "year")

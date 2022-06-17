@@ -130,6 +130,8 @@ Or look at them individually. For example we can look at the residuals spatially
 plots$resid_space_bytime
 ```
 
+Note: asterisks are used to indicate outliers, or values of residuals that are more than 3 standard deviations in magnitude.  
+
 This may not be informative (because residuals are often on different scales). Instead we can look at the randomized quantile residuals, 
 
 ```{r}
